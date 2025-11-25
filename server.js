@@ -6,13 +6,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ✅ Yeni endpoint
+// Hugging Face router endpoint
 const HF_URL = "https://router.huggingface.co/models/Qwen/Qwen2-VL-7B";
 const HF_TOKEN = process.env.HF_TOKEN; // Render'da environment variable olarak saklanıyor
 
 app.post("/solve", async (req, res) => {
   try {
     const prompt = req.body?.text || "";
+
     const r = await fetch(HF_URL, {
       method: "POST",
       headers: {
@@ -21,7 +22,16 @@ app.post("/solve", async (req, res) => {
       },
       body: JSON.stringify({ inputs: prompt })
     });
-    const data = await r.json();
+
+    // Yanıtı güvenli şekilde parse et
+    const raw = await r.text();
+    let data;
+    try {
+      data = JSON.parse(raw);
+    } catch (e) {
+      data = { error: raw };
+    }
+
     res.status(r.status).json(data);
   } catch (e) {
     res.status(500).json({ error: String(e) });
