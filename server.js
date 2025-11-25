@@ -6,8 +6,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const HF_URL = "https://api-inference.huggingface.co/models/Qwen/Qwen2-VL-7B";
-const HF_TOKEN = process.env.HF_TOKEN; // Render'da environment variable olarak saklanacak
+// ✅ Yeni endpoint
+const HF_URL = "https://router.huggingface.co/models/Qwen/Qwen2-VL-7B";
+const HF_TOKEN = process.env.HF_TOKEN; // Render'da environment variable olarak saklanıyor
 
 app.post("/solve", async (req, res) => {
   try {
